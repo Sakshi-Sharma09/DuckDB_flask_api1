@@ -1,0 +1,8 @@
+// deep_nested.json
+{
+    "patients": [
+      { "id": 1, "profile": { "name": "Alice", "age": 30, "history": { "allergies": ["penicillin"] } } },
+      { "id": 2, "profile": { "name": "Bob", "age": 40, "history": { "allergies": [] } } }
+    ]
+  }
+  
