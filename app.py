@@ -7,23 +7,38 @@ app = Flask(__name__)
 con = duckdb.connect(database=":memory:")
 
 # ------------------------------
-# Upload JSON and create table
+# Upload JSON or Parquet and create table
 # ------------------------------
 @app.route("/upload", methods=["POST"])
-def upload_json():
-    data = request.get_json(force=True)
+def upload():
     table_name = request.args.get("table", "uploaded_data")
 
-    tmp_file = f"{table_name}.json"
-    with open(tmp_file, "w") as f:
-        json.dump(data, f)
+    # Case 1: JSON upload
+    if request.is_json:
+        data = request.get_json(force=True)
+        tmp_file = f"{table_name}.json"
+        with open(tmp_file, "w") as f:
+            json.dump(data, f)
 
-    # Keep table name case as-is by quoting it
-    con.execute(
-        f'CREATE OR REPLACE TABLE "{table_name}" AS SELECT * FROM read_json_auto("{tmp_file}")'
-    )
+        con.execute(
+            f'CREATE OR REPLACE TABLE "{table_name}" AS SELECT * FROM read_json_auto("{tmp_file}")'
+        )
+        os.remove(tmp_file)
 
-    os.remove(tmp_file)
+    # Case 2: Parquet file upload
+    elif "file" in request.files:
+        file = request.files["file"]
+        tmp_file = f"{table_name}.parquet"
+        file.save(tmp_file)
+
+        con.execute(
+            f'CREATE OR REPLACE TABLE "{table_name}" AS SELECT * FROM read_parquet("{tmp_file}")'
+        )
+        os.remove(tmp_file)
+
+    else:
+        return jsonify({"error": "No JSON or Parquet data provided"}), 400
+
     return jsonify({"status": "success", "table": table_name})
 
 # ------------------------------
@@ -100,6 +115,3 @@ def metadata(table):
 # ------------------------------
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5001, debug=True)
-
-
-
