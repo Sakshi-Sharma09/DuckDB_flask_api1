@@ -1,0 +1,5 @@
+flask
+pandas
+pyarrow
+duckdb==0.10.0
+gunicorn
