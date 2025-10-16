@@ -1,97 +1,51 @@
-echo "# 🚀 Additional Connectors - Cypress Testing Guide
+# 🦆 DuckDB + Flask JSON → Parquet Converter API
 
-This repository demonstrates **Cypress testing** of connectors along with running a **Python backend API**.  
-Follow the step-by-step guide below 👇
+This project provides a simple, fast, and serverless-ready **Flask API** that allows users to:
+- Upload JSON or Parquet data
+- Automatically create DuckDB in-memory tables
+- Run SQL queries on the data
+- Retrieve metadata, schema, and table details
+- Export or convert data to Parquet format
 
----
-
-## 🛠️ 1. Clone the Repository
-\`\`\`bash
-git clone https://github.com/Connectors-Test/additional_connectors.git
-cd additional_connectors
-\`\`\`
-
----
-
-## 📦 2. Install Dependencies
-
-### 🔹 Python dependencies
-Make sure you are in the backend folder where \`app.py\` exists.  
-(If you use a virtual environment, activate it first.)
-
-\`\`\`bash
-pip install -r requirements.txt
-\`\`\`
-
-### 🔹 Node.js dependencies
-Install Cypress:
-
-\`\`\`bash
-npm install cypress --save-dev
-\`\`\`
+Built with:
+- ⚙️ Flask — lightweight Python web framework  
+- 🐤 DuckDB — in-memory analytical database engine  
+- 🧠 Pandas & PyArrow — for data transformation and Parquet conversion  
 
 ---
 
-## 📝 3. Update Test File
-Navigate to your Cypress test folder and edit the test file:
+## 🚀 Features
 
-\`\`\`bash
-cd cypress/e2e
-nano duckdb_api.cy.js
-\`\`\`
-
-- Replace the JSON inside **duckdb_api.cy.js** with your test input format.  
-- Adjust the path according to **your system's project folder** if different.  
-- Save and exit the editor.
+✅ Upload JSON or Parquet files  
+✅ Automatically infer schema and create DuckDB tables  
+✅ Run SQL queries on uploaded data  
+✅ Get table metadata (row & column count)  
+✅ Retrieve schema and column details  
+✅ Deploy easily to Render or any cloud platform  
 
 ---
 
-## ▶️ 4. Start the Backend API
-From the project root where \`app.py\` is located, run:
+## 🗂️ API Endpoints
 
-\`\`\`bash
-python3 app.py
-\`\`\`
-
-By default, the Flask API will run at:
-\`\`\`
-http://127.0.0.1:5001
-\`\`\`
-
-👉 Keep this running while executing Cypress tests.
+| Endpoint | Method | Description |
+|-----------|---------|-------------|
+| `/upload` | POST | Upload JSON or Parquet and create table |
+| `/tables` | GET | List all existing DuckDB tables |
+| `/columns/<table>` | GET | List columns of a specific table |
+| `/schema/<table>` | GET | Retrieve table schema |
+| `/metadata/<table>` | GET | Get table metadata (rows, columns) |
+| `/query` | POST | Execute a custom SQL query on DuckDB |
 
 ---
 
-## ✅ 5. Run Cypress Tests
+## 🧰 Example Usage
 
-### Headless mode (CLI)
-\`\`\`bash
-npx cypress run
-\`\`\`
+### ▶️ Upload JSON
+```bash
+curl -X POST http://localhost:5000/upload \
+     -H "Content-Type: application/json" \
+     -d '{"name": ["Alice", "Bob"], "age": [30, 25]}'
 
-### Interactive mode (GUI)
-\`\`\`bash
-npx cypress open
-\`\`\`
-
-This opens the Cypress Test Runner where you can manually select and run test files.
-
----
-
-## 📂 6. Test Artifacts
-- 📸 Screenshots of failed tests → \`cypress/screenshots/\`  
-- 🎥 Videos of test runs (if enabled) → \`cypress/videos/\`
-
----
-
-## 💡 7. Notes & Best Practices
-- Ensure the **Flask API** (\`app.py\`) is running before executing Cypress tests.  
-- Keep your **test data JSON** format consistent across \`duckdb_api.cy.js\`.  
-- For **regression testing**, place multiple JSON formats in \`cypress/fixtures/\` and reference them in test scripts.  
-- Always run:
-  \`\`\`bash
-  git pull origin main
-  \`\`\`
   before making local changes to stay updated.
 
 ---
