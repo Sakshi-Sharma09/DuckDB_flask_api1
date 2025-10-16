@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: json-parquet-converter
+    name: JSON/Parquet to CSV files Converter
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
